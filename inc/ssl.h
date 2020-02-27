@@ -3,9 +3,9 @@
 
 # define SSL_H
 
-# include "libft.h"
+# include "libftprintf.h"
 
-
+# typedef uint32_t  WORD
 
 #endif
 
