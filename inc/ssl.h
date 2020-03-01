@@ -5,7 +5,7 @@
 
 # include "libftprintf.h"
 
-# typedef uint32_t  WORD
+typedef uint32_t	WORD;
 
 #endif
 
