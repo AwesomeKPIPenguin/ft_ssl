@@ -8,7 +8,7 @@
 typedef uint8_t		BYTE;
 typedef uint32_t	WORD;
 
-BYTE				*ft_md5(const BYTE *m, size_t len);
+BYTE				*ft_md5(const BYTE *msg, size_t len);
 
 #endif
 
