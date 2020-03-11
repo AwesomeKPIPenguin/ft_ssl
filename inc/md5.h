@@ -23,6 +23,8 @@ typedef struct		s_md5_unit
 	WORD			hash[4];
 	WORD			prev_hash[4];
 	t_block			block;
+	size_t			left_len;
+	size_t			blen;
 }					t_md5_unit;
 
 static BYTE			g_pad[64] = {
