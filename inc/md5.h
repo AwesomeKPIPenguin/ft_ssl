@@ -10,8 +10,7 @@
 # define C			0x98badcfe
 # define D			0x10325476
 
-# define ROTL(x, n)	(((x) << (n)) | ((x) >> (32-(n))))
-
+# define ROTL(x, n)	(((x) << (n)) | ((x) >> (32 - (n))))
 
 typedef union		u_block
 {
@@ -71,13 +70,13 @@ static WORD			g_x[64] = {
 	0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9
 };
 
+void				*ft_encode(BYTE *dst, const BYTE *src, size_t words);
 WORD				ft_f(WORD x, WORD y, WORD z);
 WORD				ft_g(WORD x, WORD y, WORD z);
 WORD				ft_h(WORD x, WORD y, WORD z);
 WORD				ft_i(WORD x, WORD y, WORD z);
 
-static WORD			(*g_op[4])(WORD, WORD, WORD) =
-{
+static WORD			(*g_op[4])(WORD, WORD, WORD) = {
 	ft_f,
 	ft_g,
 	ft_h,

@@ -11,9 +11,22 @@ void	ft_usage()
 	exit(1);
 }
 
+void	ft_process_flags(char **av)
+{
+	int		i;
+
+	i = 2;
+	while (av[i][0] == '-')
+	{
+
+		++i;
+	}
+}
+
 int		main(int ac, char **av)
 {
 	BYTE	*hash;
+	BYTE	flags;
 
 	if (ac == 1)
 	{
@@ -22,7 +35,7 @@ int		main(int ac, char **av)
 	else
 	{
 		hash = ft_md5((BYTE *)(av[1]), ft_strlen(av[1]));
-		printf("%x%x%x%x",
+		printf("%.8x%.8x%.8x%.8x",
 			((WORD *)hash)[0], ((WORD *)hash)[1],
 			((WORD *)hash)[2], ((WORD *)hash)[3]);
 	}
