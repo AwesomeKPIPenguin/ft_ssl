@@ -11,14 +11,58 @@ void	ft_usage()
 	exit(1);
 }
 
-void	ft_process_flags(char **av)
+void	ft_process_command(t_e *e, char **av)
+{
+	e->command_name = av[1];
+	if (!ft_strcmp(av[1], "md5"))
+		e->command = ft_md5;
+	else if (!ft_strcmp(av[1], "sha256"))
+		;
+//		e->command = ft_sha256;
+	else
+	{
+		ft_error_nosuchcommand(e, 1);
+		exit(-1);
+	}
+}
+
+int		ft_process_flags(t_e *e, int ac, char **av)
+{
+	int	i;
+
+	i = 2;
+	while (i < ac && av[i][0] == '-')
+	{
+		if (!av[i][2])
+		{
+			if (av[i][1] == 's')
+				return (i);
+			if (g_fhandlers[av[i][1]])
+				i = g_fhandlers[av[i][1]](e, i);
+			else
+				ft_error_nosuchflag(e, i);
+		}
+		else
+			ft_error_nosuchflag(e, i);
+		++i;
+	}
+	return (i);
+}
+
+void	ft_process_args(t_e *e, int ac, char **av)
 {
 	int		i;
 
-	i = 2;
-	while (av[i][0] == '-')
+	ft_process_command(e, av);
+	i = ft_process_flags(e, ac, av);
+	while (i < ac)
 	{
-
+		if (!ft_strcmp(av[i], "-s"))
+			i = ft_fs(e, i);
+		else
+			/* ft_handle_file() */ ;
+		e->hash = e->command(e->msg, ft_strlen((char *)e->msg));
+		/* e->command_output(e); */
 		++i;
 	}
 }
@@ -26,17 +70,12 @@ void	ft_process_flags(char **av)
 int		main(int ac, char **av)
 {
 	BYTE	*hash;
-	BYTE	flags;
+	t_e		e;
 
+	e.av = av;
+	e.file_name = 0;
 	if (ac == 1)
-	{
-		ft_usage(); // till better times
-	}
+		ft_usage();
 	else
-	{
-		hash = ft_md5((BYTE *)(av[1]), ft_strlen(av[1]));
-		printf("%.8x%.8x%.8x%.8x",
-			((WORD *)hash)[0], ((WORD *)hash)[1],
-			((WORD *)hash)[2], ((WORD *)hash)[3]);
-	}
+		ft_process_args(&e, ac, av);
 }
