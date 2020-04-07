@@ -17,6 +17,7 @@ typedef union		u_block
 	BYTE			byte[64];
 	WORD			word[16];
 }					t_block;
+
 typedef struct		s_md5_unit
 {
 	WORD			hash[4];
