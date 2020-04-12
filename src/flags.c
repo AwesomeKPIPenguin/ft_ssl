@@ -4,10 +4,10 @@
 int		ft_fp(t_e *e, int i)
 {
 	if (!(e->flags & F_P)
-		&& (!ft_strcmp(e->command_name, "md5")
-			|| !ft_strcmp(e->command_name, "sha256")))
+		&& (!ft_strcmp(e->command_name, "MD5")
+			|| !ft_strcmp(e->command_name, "SHA256")))
 	{
-		e->flags &= F_P;
+		e->flags |= F_P;
 	}
 	return (i);
 }
@@ -15,10 +15,10 @@ int		ft_fp(t_e *e, int i)
 int		ft_fq(t_e *e, int i)
 {
 	if (!(e->flags & F_Q)
-		&& (!ft_strcmp(e->command_name, "md5")
-			|| !ft_strcmp(e->command_name, "sha256")))
+		&& (!ft_strcmp(e->command_name, "MD5")
+			|| !ft_strcmp(e->command_name, "SHA256")))
 	{
-		e->flags &= F_Q;
+		e->flags |= F_Q;
 	}
 	return (i);
 }
@@ -26,10 +26,10 @@ int		ft_fq(t_e *e, int i)
 int		ft_fr(t_e *e, int i)
 {
 	if (!(e->flags & F_R)
-		&& (!ft_strcmp(e->command_name, "md5")
-			|| !ft_strcmp(e->command_name, "sha256")))
+		&& (!ft_strcmp(e->command_name, "MD5")
+			|| !ft_strcmp(e->command_name, "SHA256")))
 	{
-		e->flags &= F_R;
+		e->flags |= F_R;
 	}
 	return (i);
 }
@@ -37,8 +37,8 @@ int		ft_fr(t_e *e, int i)
 int		ft_fs(t_e *e, int i)
 {
 	if (!(e->flags & F_S)
-		&& (!ft_strcmp(e->command_name, "md5")
-			|| !ft_strcmp(e->command_name, "sha256")))
+		&& (!ft_strcmp(e->command_name, "MD5")
+			|| !ft_strcmp(e->command_name, "SHA256")))
 	{
 		if (!(e->av[i + 1]))
 		{
@@ -46,7 +46,7 @@ int		ft_fs(t_e *e, int i)
 			return (i);
 		}
 		e->msg = (BYTE *)e->av[i + 1];
-		e->flags &= F_S;
+		e->flags |= F_S;
 		return (i + 1);
 	}
 }

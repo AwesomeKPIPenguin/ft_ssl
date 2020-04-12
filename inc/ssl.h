@@ -18,9 +18,9 @@ typedef uint32_t	WORD;
 typedef struct		s_e
 {
 	char			**av;
+	char			*command_name;
 	BYTE			*(*command)(const BYTE *, size_t);
 	void			(*output)(struct s_e *e);
-	char			*command_name;
 	uint16_t		flags;
 	char			*file_name;
 	int				is_stdin;
@@ -56,6 +56,7 @@ static const char	*g_err_tmpl_short = "ft_ssl: %s: %s";
 static const char	*g_err_tmpl_long = "ft_ssl: %s: %s: %s";
 
 BYTE				*ft_md5(const BYTE *msg, size_t len);
+void				ft_md5_init_e(t_e *e);
 void				ft_md5_output(t_e *e);
 
 void				ft_error_nosuchcommand(t_e *e, int i);

@@ -112,6 +112,6 @@ BYTE		*ft_md5(const BYTE *msg, size_t len)
 		if (!ft_process_block(&unit, msg, i++))
 			break ;
 	res = (BYTE *)ft_smemalloc(16, "ft_md5");
-	ft_encode(res, (BYTE *)unit.hash, 16);
+	ft_encode(res, (BYTE *)unit.hash, 4);
 	return (res);
 }

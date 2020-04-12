@@ -1,14 +1,14 @@
 
 #include "md5.h"
 
-static void	ft_md5_output_hash(BYTE *hash, int isendl)
+static void	ft_md5_output_hash(const BYTE *hash, int isendl)
 {
 	ft_printf(
 		"%.8x%.8x%.8x%.8x%s",
-		(WORD)(hash[0]),
-		(WORD)(hash[4]),
-		(WORD)(hash[8]),
-		(WORD)(hash[12]),
+		*(WORD *)(&(hash[0])),
+		*(WORD *)(&(hash[4])),
+		*(WORD *)(&(hash[8])),
+		*(WORD *)(&(hash[12])),
 		isendl ? "\n" : ""
 	);
 }
@@ -42,7 +42,7 @@ static void	ft_md5_output_arg(t_e *e)
 		}
 		else
 		{
-			ft_printf("(");
+			ft_printf("%s (", e->command_name);
 			ft_md5_output_name(e, 0);
 			ft_printf(") = ");
 			ft_md5_output_hash(e->hash, 1);
