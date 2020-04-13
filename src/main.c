@@ -1,15 +1,5 @@
 
 #include "ssl.h"
-#include <stdio.h>
-
-void	ft_usage()
-{
-	char	*msg;
-
-	msg = "usage: ft_ssl command [command opts] [command args]\n";
-	write(1, msg, ft_strlen(msg));
-	exit(1);
-}
 
 void	ft_process_command(t_e *e, char **av)
 {
@@ -37,8 +27,8 @@ int		ft_process_flags(t_e *e, int ac, char **av)
 		{
 			if (av[i][1] == 's')
 				return (i);
-			if (g_fhandlers[av[i][1]])
-				i = g_fhandlers[av[i][1]](e, i);
+			if (e->fhandlers[(int)av[i][1]])
+				i = e->fhandlers[(int)av[i][1]](e, i);
 			else
 				ft_error_nosuchflag(e, i);
 		}
@@ -52,21 +42,11 @@ int		ft_process_flags(t_e *e, int ac, char **av)
 void	ft_process_args(t_e *e, int ac, char **av)
 {
 	int		i;
-	char	*buff;
-	char	*tmp;
 
 	ft_process_command(e, av);
 	i = ft_process_flags(e, ac, av);
-//	while (get_next_line(0, &buff))
-//	{
-//		e->is_stdin = 1;
-//		tmp = ft_strjoin((char *)e->msg, buff);
-//		free(e->msg);
-//		free(buff);
-//		e->msg = (BYTE *)tmp;
-//	}
-//	e->hash = e->command(e->msg, ft_strlen((char *)e->msg));
-//	e->output(e);
+	if (ac == 2 || e->flags & F_P)
+		ft_process_stdin(e);
 	while (i < ac)
 	{
 		e->file_name = NULL;
@@ -78,25 +58,24 @@ void	ft_process_args(t_e *e, int ac, char **av)
 			e->file_name = av[i];
 			e->msg = (BYTE *)ft_readfile(av[i]);
 		}
-		e->hash = e->command(e->msg, ft_strlen((char *)e->msg));
-		e->output(e);
-		free(e->hash);
+		ft_process_msg(e);
 		++i;
 	}
 }
 
 int		main(int ac, char **av)
 {
-	BYTE	*hash;
 	t_e		e;
 
-	e.av = av;
-	e.file_name = NULL;
-	e.msg = NULL;
-	e.is_stdin = 0;
-	e.flags = 0;
+	ft_init_e(&e);
 	if (ac == 1)
-		ft_usage();
+	{
+		ft_printf("usage: ft_ssl command [command opts] [command args]\n");
+		return (-1);
+	}
 	else
+	{
 		ft_process_args(&e, ac, av);
+	}
+	return (0);
 }

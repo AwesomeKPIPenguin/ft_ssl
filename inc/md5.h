@@ -38,7 +38,7 @@ static const BYTE	g_pad[64] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-static const WORD	g_abssin[64] = {
+const WORD			g_abssin[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -57,14 +57,14 @@ static const WORD	g_abssin[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-static const WORD	g_s[4][4] = {
+const WORD			g_s[4][4] = {
 	{ 7, 12, 17, 22 },
 	{ 5,  9, 14, 20 },
 	{ 4, 11, 16, 23 },
 	{ 6, 10, 15, 21 }
 };
 
-static const WORD	g_x[64] = {
+const WORD			g_x[64] = {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
 	5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
@@ -72,12 +72,13 @@ static const WORD	g_x[64] = {
 };
 
 void				*ft_encode(BYTE *dst, const BYTE *src, size_t words);
+
 WORD				ft_f(WORD x, WORD y, WORD z);
 WORD				ft_g(WORD x, WORD y, WORD z);
 WORD				ft_h(WORD x, WORD y, WORD z);
 WORD				ft_i(WORD x, WORD y, WORD z);
 
-static WORD			(*g_op[4])(WORD, WORD, WORD) = {
+WORD				(*g_op[4])(WORD, WORD, WORD) = {
 	ft_f,
 	ft_g,
 	ft_h,

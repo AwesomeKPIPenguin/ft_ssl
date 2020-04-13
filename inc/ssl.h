@@ -22,38 +22,23 @@ typedef struct		s_e
 	BYTE			*(*command)(const BYTE *, size_t);
 	void			(*output)(struct s_e *e);
 	uint16_t		flags;
+	int				(*fhandlers[256])(struct s_e *, int);
 	char			*file_name;
 	int				is_stdin;
 	BYTE			*msg;
 	BYTE			*hash;
 }					t_e;
 
+static const char			*g_err_tmpl_short = "ft_ssl: %s: %s";
+const char			*g_err_tmpl_long = "ft_ssl: %s: %s: %s";
+
 int					ft_fp(t_e *e, int i);
 int					ft_fq(t_e *e, int i);
 int					ft_fr(t_e *e, int i);
 int					ft_fs(t_e *e, int i);
-
-static int			(*g_fhandlers[256])(t_e *, int) = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	ft_fp, ft_fq, ft_fr, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-
-static const char	*g_err_tmpl_short = "ft_ssl: %s: %s";
-static const char	*g_err_tmpl_long = "ft_ssl: %s: %s: %s";
+void				ft_init_e(t_e *e);
+void				ft_process_msg(t_e *e);
+void				ft_process_stdin(t_e *e);
 
 BYTE				*ft_md5(const BYTE *msg, size_t len);
 void				ft_md5_init_e(t_e *e);

@@ -3,6 +3,7 @@
 
 void	ft_error_nosuchcommand(t_e *e, int i)
 {
+	i = i;
 	ft_printf(g_err_tmpl_short, e->command_name, "No such command\n");
 }
 

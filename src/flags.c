@@ -49,4 +49,5 @@ int		ft_fs(t_e *e, int i)
 		e->flags |= F_S;
 		return (i + 1);
 	}
+	return (-42);
 }
