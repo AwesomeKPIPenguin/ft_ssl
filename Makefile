@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 CPPFLAGS = -Iinc -Ilibft
 
 LIBFT = libft/libftprintf.a
-SRC = $(wildcard src/*.c src/*/*.c)
+SRC = $(wildcard src/*/*.c)
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean fclean re

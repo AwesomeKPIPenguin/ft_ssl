@@ -29,14 +29,11 @@ typedef struct		s_e
 	BYTE			*hash;
 }					t_e;
 
-static const char			*g_err_tmpl_short = "ft_ssl: %s: %s";
-const char			*g_err_tmpl_long = "ft_ssl: %s: %s: %s";
-
 int					ft_fp(t_e *e, int i);
 int					ft_fq(t_e *e, int i);
 int					ft_fr(t_e *e, int i);
 int					ft_fs(t_e *e, int i);
-void				ft_init_e(t_e *e);
+void				ft_init_e(t_e *e, char **av);
 void				ft_process_msg(t_e *e);
 void				ft_process_stdin(t_e *e);
 

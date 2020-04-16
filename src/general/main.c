@@ -59,6 +59,8 @@ void	ft_process_args(t_e *e, int ac, char **av)
 			e->msg = (BYTE *)ft_readfile(av[i]);
 		}
 		ft_process_msg(e);
+		if (!(e->flags & F_S))
+			free(e->msg);
 		++i;
 	}
 }
@@ -67,7 +69,7 @@ int		main(int ac, char **av)
 {
 	t_e		e;
 
-	ft_init_e(&e);
+	ft_init_e(&e, av);
 	if (ac == 1)
 	{
 		ft_printf("usage: ft_ssl command [command opts] [command args]\n");

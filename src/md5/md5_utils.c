@@ -15,16 +15,4 @@ void	ft_process_msg(t_e *e)
 	free(e->hash);
 }
 
-void	ft_process_stdin(t_e *e)
-{
-	char	*tmp;
 
-	tmp = NULL;
-	while (get_next_line(0, &tmp))
-	{
-		e->msg = (BYTE *)ft_strjoin((char *)e->msg, tmp);
-		free(tmp);
-		tmp = NULL;
-	}
-	ft_process_msg(e);
-}
