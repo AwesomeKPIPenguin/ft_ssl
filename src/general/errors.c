@@ -20,3 +20,15 @@ void				ft_error_noarg(t_e *e, int i)
 	ft_printf(g_err_tmpl_long,
 		e->command_name, e->av[i], "No argument was given\n");
 }
+
+void				ft_error_nosuchfile(t_e *e, int i)
+{
+	ft_printf(g_err_tmpl_long,
+		e->command_name, e->av[i], "File not found\n");
+}
+
+void				ft_error_badfile(t_e *e, int i)
+{
+	ft_printf(g_err_tmpl_long,
+		e->command_name, e->av[i], "Not a file or unable to read\n");
+}

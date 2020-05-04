@@ -10,25 +10,37 @@ void	ft_init_e(t_e *e, char **av)
 	e->fhandlers['r'] = ft_fr;
 }
 
-void	ft_process_stdin(t_e *e)
+int		ft_open_file(t_e *e, int i)
 {
-	char	*buffer;
-	char	*tmp;
-	ssize_t	len;
+	int	fd;
 
-	e->msg = (BYTE *)ft_strnew(1, 0);
-	buffer = ft_strnew(BUFF_SIZE, 0);
-	while ((len = read(0, buffer, BUFF_SIZE)))
+	e->file_name = e->av[i];
+	if ((fd = open(e->file_name, O_RDONLY)) < 0)
 	{
-		buffer[len - 1] = 0;
-		tmp = ft_strjoin((char *)e->msg, buffer);
-		free(e->msg);
-		ft_bzero(buffer, BUFF_SIZE + 1);
-		e->msg = (BYTE *)tmp;
+		ft_error_nosuchfile(e, i);
+		return (-1);
 	}
-	free(buffer);
-	e->is_stdin = 1;
-	ft_process_msg(e);
-	e->is_stdin = 0;
-	free(e->msg);
+	if (!(read(fd, NULL, 0)))
+	{
+		ft_error_badfile(e, i);
+		return (-1);
+	}
+	return (fd);
+}
+
+void	ft_hash_process_fd(t_e *e, int fd)
+{
+	char	buffer[SSL_BSIZE];
+	ssize_t	len;
+	size_t	total_len;
+
+	if (fd < 0)
+		return ;
+	total_len = 0;
+	while ((len = read(fd, buffer, SSL_BSIZE)) == SSL_BSIZE)
+	{
+		e->update_hash((BYTE *)buffer, SSL_BSIZE, 0);
+		total_len += SSL_BSIZE;
+	}
+	e->update_hash((BYTE *)buffer, total_len + len, 1);
 }

@@ -47,6 +47,7 @@ int		ft_fs(t_e *e, int i)
 		}
 		e->msg = (BYTE *)e->av[i + 1];
 		e->flags |= F_S;
+		e->update_hash(e->msg, ft_strlen(e->av[i + 1]), 1);
 		return (i + 1);
 	}
 	return (-42);

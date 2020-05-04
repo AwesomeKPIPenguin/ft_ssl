@@ -7,8 +7,7 @@ void	ft_process_command(t_e *e, char **av)
 	if (!ft_strcmp(av[1], "md5"))
 		ft_md5_init_e(e);
 	else if (!ft_strcmp(av[1], "sha256"))
-		;
-//		e->command = ft_sha256;
+		ft_sha256_init_e(e);
 	else
 	{
 		ft_error_nosuchcommand(e, 1);
@@ -46,7 +45,10 @@ void	ft_process_args(t_e *e, int ac, char **av)
 	ft_process_command(e, av);
 	i = ft_process_flags(e, ac, av);
 	if (ac == 2 || e->flags & F_P)
-		ft_process_stdin(e);
+	{
+		ft_hash_process_fd(e, 0);
+		ft_hash_output(e);
+	}
 	while (i < ac)
 	{
 		e->file_name = NULL;
@@ -54,13 +56,8 @@ void	ft_process_args(t_e *e, int ac, char **av)
 		if (!ft_strcmp(av[i], "-s"))
 			i = ft_fs(e, i);
 		else
-		{
-			e->file_name = av[i];
-			e->msg = (BYTE *)ft_readfile(av[i]);
-		}
-		ft_process_msg(e);
-		if (!(e->flags & F_S))
-			free(e->msg);
+			ft_hash_process_fd(e, ft_open_file(e, i));
+		ft_hash_output(e);
 		++i;
 	}
 }

@@ -1,16 +1,9 @@
 
 #include "md5.h"
 
-static const BYTE	g_pad[64] = {
-	0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
+/*
+**	constants
+*/
 
 static const WORD	g_abssin[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
@@ -52,113 +45,94 @@ static WORD			(*const g_op[4])(WORD, WORD, WORD) = {
 	ft_i
 };
 
+static WORD			g_hash[4] = {
+	A, B, C, D
+};
+
+/*
+**	functions
+*/
+
+void				ft_md5_init_e(t_e *e)
+{
+	e->command_name = ft_strdup("MD5");
+	e->update_hash = ft_md5_update;
+	e->output_hash = ft_md5_output_hash;
+}
+
+void				ft_md5_output_hash(int isendl)
+{
+	ft_printf(
+		"%.8x%.8x%.8x%.8x%s",
+		g_hash[0],
+		g_hash[1],
+		g_hash[2],
+		g_hash[3],
+		isendl ? "\n" : ""
+	);
+}
+
+void				ft_md5_encode(void)
+{
+	int		i;
+	BYTE	res[16];
+
+	i = 0;
+	while (i < 16)
+	{
+		res[i] = ((BYTE *)g_hash)[((i / 4 + 1) * 4 - 1) - (i - i / 4 * 4)];
+		++i;
+	}
+	ft_memcpy(g_hash, res, 16);
+}
+
 /*
 **	4 rounds x 16 operations: a = b + ((a + FGHI(b, c, d) + X[k] + T[i]) <<< s)
 */
 
-static void			ft_update(t_md5_unit *unit)
+void				ft_md5_block_update(WORD *b)
 {
 	int		i;
 	WORD	f;
 	WORD	tmp;
+	WORD	prev_hash[4];
 
-	ft_memcpy(unit->prev_hash, unit->hash, 16);
+	ft_memcpy(prev_hash, g_hash, 16);
 	i = 0;
 	while (i < 64)
 	{
-		f = g_op[i / 16](unit->hash[1], unit->hash[2], unit->hash[3]);
+		f = g_op[i / 16](g_hash[1], g_hash[2], g_hash[3]);
 		tmp = ROTL(
-			unit->hash[0] + f + unit->block.word[g_x[i]] + g_abssin[i],
+			g_hash[0] + f + b[g_x[i]] + g_abssin[i],
 			g_s[i / 16][i % 4]
 		);
-		unit->hash[0] = unit->hash[1] + tmp;
-		tmp = unit->hash[0];
-		unit->hash[0] = unit->hash[3];
-		unit->hash[3] = unit->hash[2];
-		unit->hash[2] = unit->hash[1];
-		unit->hash[1] = tmp;
+		g_hash[0] = g_hash[1] + tmp;
+		tmp = g_hash[0];
+		g_hash[0] = g_hash[3];
+		g_hash[3] = g_hash[2];
+		g_hash[2] = g_hash[1];
+		g_hash[1] = tmp;
 		++i;
 	}
-	unit->hash[0] += unit->prev_hash[0];
-	unit->hash[1] += unit->prev_hash[1];
-	unit->hash[2] += unit->prev_hash[2];
-	unit->hash[3] += unit->prev_hash[3];
+	g_hash[0] += prev_hash[0];
+	g_hash[1] += prev_hash[1];
+	g_hash[2] += prev_hash[2];
+	g_hash[3] += prev_hash[3];
 }
 
-static void			ft_append_len(BYTE *block, size_t len)
-{
-	WORD	*wlen;
-
-	wlen = (WORD *)&len;
-	if (!wlen[1])
-		*((WORD *)(&(block[56]))) = wlen[0];
-	else
-		*((size_t *)(&(block[56]))) = len;
-}
-
-static void			ft_pad_block(t_md5_unit *unit, const BYTE *msg)
-{
-	if (unit->left_len < 56)
-	{
-		ft_memcpy(unit->block.byte, msg, unit->left_len);
-		ft_memcpy(
-			&(unit->block.byte[unit->left_len]), g_pad, 56 - unit->left_len);
-		ft_append_len(unit->block.byte, unit->blen);
-		unit->left_len = 64;
-	}
-	else if (unit->left_len <= 64)
-	{
-		ft_memcpy(unit->block.byte, msg, unit->left_len);
-		ft_memcpy(
-			&(unit->block.byte[unit->left_len]), g_pad, 64 - unit->left_len);
-		ft_update(unit);
-		(unit->left_len == 64)
-			? ft_memcpy(unit->block.byte, g_pad, 64)
-			: ft_bzero(unit->block.byte, 64);
-		ft_append_len(unit->block.byte, unit->blen);
-		unit->left_len = 64;
-	}
-	else
-		ft_memcpy(unit->block.byte, msg, 64);
-}
-
-static int			ft_process_block(t_md5_unit	*unit, const BYTE *msg, int i)
-{
-	ft_bzero(unit->block.byte, 64);
-	ft_pad_block(unit, &(msg[i * 64]));
-	ft_update(unit);
-	unit->left_len -= 64;
-	if (unit->left_len == 64)
-	{
-		ft_memcpy(unit->block.byte, g_pad, 64);
-		ft_append_len(unit->block.byte, unit->blen);
-		ft_update(unit);
-		return (0);
-	}
-	if (!unit->left_len)
-		return (0);
-	return (1);
-}
-
-BYTE				*ft_md5(const BYTE *msg, size_t len)
+void				ft_md5_update(const BYTE *msg, size_t len, int is_end)
 {
 	int			i;
-	t_md5_unit	unit;
-	BYTE		*res;
+	t_oblock	ob;
 
-	if (!len)
-		len = ft_strlen((char *)msg);
-	unit.hash[0] = A;
-	unit.hash[1] = B;
-	unit.hash[2] = C;
-	unit.hash[3] = D;
 	i = 0;
-	unit.left_len = len;
-	unit.blen = len * 8;
+	ob.msg = msg;
+	if (is_end)
+		ob.blen = len * 8;
+	ob.left_len = len % SSL_BSIZE;
 	while (1)
-		if (!ft_process_block(&unit, msg, i++))
+		if (!ft_process_hash_block(&ob, ft_md5_block_update, i++, is_end))
 			break ;
-	res = (BYTE *)ft_smemalloc(16, "ft_md5");
-	ft_encode(res, (BYTE *)unit.hash, 4);
-	return (res);
+	if (is_end)
+		ft_md5_encode();
 }
